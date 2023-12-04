@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface InputHelper {
 
+    String ENTER = "\n";
+
     default void doJobBefore(List<String> outputLines) {}
     default void doJobAfter(List<String> outputLines) {}
     default String getMatcherLineContains() {
@@ -19,6 +21,6 @@ public interface InputHelper {
         return null;
     }
     default String getInputValue() {
-        return "\n";
+        return "";
     }
 }

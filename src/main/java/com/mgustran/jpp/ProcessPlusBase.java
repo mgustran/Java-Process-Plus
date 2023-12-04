@@ -51,6 +51,7 @@ public class ProcessPlusBase {
         while ((line = br.readLine()) != null) {
             String finalLine = line;
             lines.add(line);
+//            log.info(line);
             List<InputHelper> helperList = helpers.stream()
                     .filter(inputHelper -> {
                         Boolean valid = null;
@@ -59,7 +60,7 @@ public class ProcessPlusBase {
                             return matcher.matches();
                         }
                         if (inputHelper.getMatcherLineStartWith() != null) {
-                            valid = finalLine.endsWith(inputHelper.getMatcherLineEndWith());
+                            valid = finalLine.startsWith(inputHelper.getMatcherLineStartWith());
                         }
                         if (inputHelper.getMatcherLineEndWith() != null) {
                             valid =  ! Boolean.FALSE.equals(valid) && finalLine.endsWith(inputHelper.getMatcherLineEndWith());
@@ -74,7 +75,7 @@ public class ProcessPlusBase {
             helperList.forEach(inputHelper -> {
                 inputHelper.doJobBefore(lines);
                 try {
-                    writer.write(inputHelper.getInputValue().equals("\n") ? "\n" : inputHelper.getInputValue() + "\n");
+                    writer.write(inputHelper.getInputValue() == null ? "" : inputHelper.getInputValue());
                     writer.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);

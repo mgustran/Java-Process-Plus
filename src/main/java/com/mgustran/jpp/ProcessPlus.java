@@ -42,7 +42,7 @@ public class ProcessPlus {
     private ProcessBuilder addCommandToBuilder(String command) {
         final ProcessBuilder builder = new ProcessBuilder();
         String os = System.getProperty("os.name");
-        log.info(os);
+//        log.info(os);
         if (os.startsWith("Linux")) {
             builder.command("sh", "-c", command);
         } else {
