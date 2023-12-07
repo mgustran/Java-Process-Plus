@@ -8,12 +8,13 @@ import java.util.logging.Logger;
 public class ProcessPlus {
 
     private static final Logger log = Logger.getLogger(ProcessPlus.class.getCanonicalName());
-    private ProcessPlusConfig config = null;
+    private final ProcessPlusConfig config;
 
     private final ProcessPlusBase base;
 
     public ProcessPlus() {
-        this.base = new ProcessPlusBase();
+        this.config = ProcessPlusConfig.builder().build();
+        this.base = new ProcessPlusBase(this.config);
     }
 
     public ProcessPlus(final ProcessPlusConfig config) {

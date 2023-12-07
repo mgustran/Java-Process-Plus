@@ -20,10 +20,11 @@ public class ProcessPlusBase {
         this.config = config;
         this.processUtils = new ProcessPlusBaseUtils(config);
         if (config.isDebugInfo() || config.isDebugOutput()) {
-//            System.setProperty("java.util.logging.SimpleFormatter.format",
-//                    "%1$tF %1$tT %4$s %2$s %5$s%6$s%n"
-////                    "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n"
-//            );
+//            todo: check if this is good xd
+            System.setProperty("java.util.logging.SimpleFormatter.format",
+                    "%1$tF %1$tT %4$s %2$s %5$s%6$s%n"
+//                    "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n"
+            );
         }
     }
 
@@ -77,8 +78,8 @@ public class ProcessPlusBase {
             final Writer writer = new PrintWriter(os);
             final InputStream in = p.getInputStream();
             final BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            final List<String> lines = new ArrayList<>();
             String line;
-            List<String> lines = new ArrayList<>();
             while ((line = br.readLine()) != null) {
                 if (this.config.isDebugOutput()) {
                     log.info(line);
