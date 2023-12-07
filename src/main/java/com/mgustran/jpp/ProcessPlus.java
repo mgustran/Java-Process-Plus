@@ -8,11 +8,17 @@ import java.util.logging.Logger;
 public class ProcessPlus {
 
     private static final Logger log = Logger.getLogger(ProcessPlus.class.getCanonicalName());
+    private ProcessPlusConfig config = null;
 
     private final ProcessPlusBase base;
 
     public ProcessPlus() {
         this.base = new ProcessPlusBase();
+    }
+
+    public ProcessPlus(final ProcessPlusConfig config) {
+        this.config = config;
+        this.base = new ProcessPlusBase(config);
     }
 
     public List<String> executeCommandGetLines(final String command) {
@@ -34,7 +40,7 @@ public class ProcessPlus {
         this.base.executeCommandNoBlock(builder);
     }
 
-    public void executeCommandWithInput(final String command, final List<InputHelper> helpers) throws IOException {
+    public void executeCommandWithInput(final String command, final List<InputHelper> helpers) {
         final ProcessBuilder builder = this.addCommandToBuilder(command);
         this.base.executeCommandWithInput(builder, helpers);
     }
@@ -47,6 +53,9 @@ public class ProcessPlus {
             builder.command("sh", "-c", command);
         } else {
             builder.command(command.split(" "));
+        }
+        if (this.config.isDebugInfo()) {
+            log.fine("transformed string command \"" + command + "\" to String[] command: " + builder.command());
         }
         return builder;
     }

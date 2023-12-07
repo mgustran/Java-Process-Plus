@@ -1,12 +1,13 @@
 #!/bin/bash
 # Ask the user for their name
 echo "init script"
-sleep 2
+#sleep 2
 echo Hello, who am I talking to?
 read varname
 varname=${varname:-Richard}
 echo It\'s nice to meet you $varname
 
+# Simulating certbot command
 #certbot -d "*.example.es"         --server https://acme-v02.api.letsencrypt.org/directory         --preferred-challenges dns certonly         --manual         --agree-tos  --manual-public-ip-logging-ok --force-renewal         --email "mgustran@gmail.com"
 
 echo "Saving debug log to /var/log/letsencrypt/letsencrypt.log"

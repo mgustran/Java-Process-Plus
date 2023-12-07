@@ -1,23 +1,52 @@
 package com.mgustran.jpp;
 
+import lombok.NoArgsConstructor;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
 public class ProcessPlusBase {
 
+    private final ProcessPlusBaseUtils processUtils;
+    private final ProcessPlusConfig config;
+
     private static final Logger log = Logger.getLogger(ProcessPlusBase.class.getCanonicalName());
+
+    public ProcessPlusBase(final ProcessPlusConfig config) {
+        this.config = config;
+        this.processUtils = new ProcessPlusBaseUtils(config);
+        if (config.isDebugInfo() || config.isDebugOutput()) {
+//            System.setProperty("java.util.logging.SimpleFormatter.format",
+//                    "%1$tF %1$tT %4$s %2$s %5$s%6$s%n"
+////                    "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n"
+//            );
+        }
+    }
+
+    public ProcessPlusBase() {
+        this.config = ProcessPlusConfig.builder().build();
+        this.processUtils = new ProcessPlusBaseUtils(this.config);
+    }
 
     public List<String> executeCommandGetLines(final ProcessBuilder builder) {
         try {
             final Process process = builder.start();
             return new BufferedReader(new InputStreamReader(process.getInputStream()))
                     .lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String executeCommandGetString(final ProcessBuilder builder) {
+        try {
+            final Process process = builder.start();
+            return new BufferedReader(new InputStreamReader(process.getInputStream()))
+                    .lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -40,50 +69,28 @@ public class ProcessPlusBase {
         }
     }
 
-    public void executeCommandWithInput(final ProcessBuilder builder, final List<InputHelper> helpers) throws IOException {
-        Process p = builder.start();
-        OutputStream os = p.getOutputStream();
-        Writer writer = new PrintWriter(os);
-        InputStream in = p.getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String line;
-        List<String> lines = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            String finalLine = line;
-            lines.add(line);
-//            log.info(line);
-            List<InputHelper> helperList = helpers.stream()
-                    .filter(inputHelper -> {
-                        Boolean valid = null;
-                        if (inputHelper.getMatcherLineRegex() != null) {
-                            Matcher matcher = Pattern.compile(inputHelper.getMatcherLineRegex()).matcher(finalLine);
-                            return matcher.matches();
-                        }
-                        if (inputHelper.getMatcherLineStartWith() != null) {
-                            valid = finalLine.startsWith(inputHelper.getMatcherLineStartWith());
-                        }
-                        if (inputHelper.getMatcherLineEndWith() != null) {
-                            valid =  ! Boolean.FALSE.equals(valid) && finalLine.endsWith(inputHelper.getMatcherLineEndWith());
-                        }
-                        if (inputHelper.getMatcherLineContains() != null) {
-                            valid = ! Boolean.FALSE.equals(valid) && finalLine.contains(inputHelper.getMatcherLineContains());
-                        }
-                        return valid;
+    public void executeCommandWithInput(final ProcessBuilder builder, final List<InputHelper> helpers) {
+        try {
 
-                    })
-                    .collect(Collectors.toList());
-            helperList.forEach(inputHelper -> {
-                inputHelper.doJobBefore(lines);
-                try {
-                    writer.write(inputHelper.getInputValue() == null ? "" : inputHelper.getInputValue());
-                    writer.flush();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            final Process p = builder.start();
+            final OutputStream os = p.getOutputStream();
+            final Writer writer = new PrintWriter(os);
+            final InputStream in = p.getInputStream();
+            final BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            List<String> lines = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                if (this.config.isDebugOutput()) {
+                    log.info(line);
                 }
-                inputHelper.doJobAfter(lines);
-            });
+                lines.add(line);
+                List<InputHelper> validHelpers = this.processUtils.getValidHelpers(helpers, line);
+                validHelpers.forEach(inputHelper -> this.processUtils.executeHelper(inputHelper, lines, writer));
+            }
+            writer.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        writer.close();
     }
 }
 

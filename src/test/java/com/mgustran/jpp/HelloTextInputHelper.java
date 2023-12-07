@@ -1,9 +1,10 @@
 package com.mgustran.jpp;
 
 
+import lombok.ToString;
+
 import java.util.List;
 import java.util.logging.Logger;
-
 
 public class HelloTextInputHelper implements InputHelper {
 

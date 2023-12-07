@@ -37,6 +37,7 @@ You can use jitpack to add this dependency:
 ### Option 3) Local
 * Download project and install the lib to your local:
   * `mvn clean install`
+  * add dependency to pom.xml (like in option 1)
 
 
 ## Usage

@@ -6,7 +6,7 @@
 
 	<groupId>com.mgustran</groupId>
 	<artifactId>java-process-plus</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 
 	<name>java-process-plus</name>
@@ -73,10 +73,31 @@
 			<version>2.14.0-rc1</version>
 		</dependency-->
 
+<!--		<dependency>-->
+<!--			<groupId>org.junit.jupiter</groupId>-->
+<!--			<artifactId>junit-jupiter</artifactId>-->
+<!--			<version>5.9.1</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.9.1</version>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.9.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.3.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+<!--			<version>5.2.0</version>-->
+			<version>5.3.1</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -1,6 +1,9 @@
 package com.mgustran.jpp;
 
+import lombok.ToString;
+
 import java.util.List;
+
 
 public interface InputHelper {
 
@@ -22,5 +25,15 @@ public interface InputHelper {
     }
     default String getInputValue() {
         return "";
+    }
+
+    default String toStr() {
+        return InputHelper.class.getSimpleName() + "( " +
+                "getMatcherLineContains='" + this.getMatcherLineContains() + "', " +
+                "getMatcherLineStartWith='" + this.getMatcherLineStartWith() + "', " +
+                "getMatcherLineEndWith='" + this.getMatcherLineEndWith() + "', " +
+                "getMatcherLineRegex='" + this.getMatcherLineRegex() + "', " +
+                "getInputValue='" + this.getInputValue() + "', " +
+                " )";
     }
 }

@@ -1,10 +1,11 @@
 package com.mgustran.jpp;
 
 
+import lombok.ToString;
+
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
-
 
 public class Certbot1InputHelper implements InputHelper {
 
@@ -14,6 +15,11 @@ public class Certbot1InputHelper implements InputHelper {
     @Override
     public String getMatcherLineStartWith() {
         return "Press Enter to Continue";
+    }
+
+    @Override
+    public String getInputValue() {
+        return ENTER;
     }
 
     @Override
